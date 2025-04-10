@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Room Booking</title>
+<link rel="stylesheet" href="booknow.css">
+<script>
+function showPaymentFields() {
+    var paymentMethod = document.getElementById("paymentMethod").value;
+    var cardDetails = document.getElementById("cardDetails");
+    var onlinePaymentURL = document.getElementById("onlinePaymentURL");
+    if (paymentMethod === "creditCard" || paymentMethod === "debitCard") {
+        cardDetails.style.display = "block";
+        onlinePaymentURL.style.display = "none";
+    } else if (paymentMethod === "onlinePayment") {
+        cardDetails.style.display = "none";
+        onlinePaymentURL.style.display = "block";
+    } else {
+        cardDetails.style.display = "none";
+        onlinePaymentURL.style.display = "none";
+    }
+}
+
+function calculateCost() {
+    var roomType = document.getElementById("roomType").value;
+    var checkInDate = new Date(document.getElementById("checkInDate").value);
+    var checkOutDate = new Date(document.getElementById("checkOutDate").value);
+    var cost = 0;
+    if (roomType === "single") {
+        cost = 5000;
+    } else if (roomType === "double") {
+        cost = 3000;
+    } else if (roomType === "suite") {
+        cost = 8000;
+    }
+    var nights = (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+    var totalCost = cost * nights;
+    document.getElementById("totalCost").innerText = "Total Cost: " + totalCost + " INR";
+}
+
+function handleSubmit(event) {
+    event.preventDefault();
+
+    // Validation for mobile number
+    var contact = document.getElementById("contact").value;
+    var mobileRegex = /^[0-9]{10}$/;
+    if (!mobileRegex.test(contact)) {
+        alert("Please enter a valid 10-digit mobile number.");
+        return;
+    }
+
+    // Validation for email address
+    var email = document.getElementById("email").value;
+    var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
+    if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address (e.g., user@example.com).");
+        return;
+    }
+
+    // Validation for address
+    var address = document.getElementById("address").value;
+    var addressRegex = /^[a-zA-Z0-9\s,.'-]{10,}$/;
+    if (!addressRegex.test(address)) {
+        alert("Please enter a valid address (minimum 10 characters).");
+        return;
+    }
+
+    // Validation for future check-in and check-out dates
+    var checkInDate = new Date(document.getElementById("checkInDate").value);
+    var checkOutDate = new Date(document.getElementById("checkOutDate").value);
+    var today = new Date();
+
+    if (checkInDate <= today) {
+        alert("Check-in date is invalid.");
+        return;
+    }
+    if (checkOutDate <= checkInDate) {
+        alert("Check-out date must be after the check-in date.");
+        return;
+    }
+
+    // Validation for UPI ID
+    var upiID = document.getElementById("paymentUPI").value;
+    var upiRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+$/;
+    if (!upiRegex.test(upiID)) {
+        alert("Please enter a valid UPI ID (e.g., username@bankname).");
+        return;
+    }
+
+    calculateCost();
+
+    // Clear form fields
+    document.getElementById("bookingForm").reset();
+    document.getElementById("cardDetails").style.display = "none";
+    document.getElementById("onlinePaymentURL").style.display = "none";
+
+    // Show thank you message
+    document.getElementById("formContainer").innerHTML = '<div class="thank-you-message"><h1>Thank you for choosing our hotel for your stay!<br>Have a nice day...</h1></div>';
+}
+</script>
+</head>
+<body>
+<div class="container" id="formContainer">
+    <header><h1>Book a Room</h1></header>
+    <form id="bookingForm" onsubmit="handleSubmit(event)">
+        <label for="roomType">Room Type:</label>
+        <select id="roomType" name="roomType" required>
+            <option value="single">DELUX ROOM</option>
+            <option value="double">STANDARD ROOM</option>
+            <option value="suite">SUITE ROOM</option>
+        </select>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="contact">Mobile Number:</label>
+        <input type="text" id="contact" name="contact" required>
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address">
+        <label for="checkInDate">Check-in Date:</label>
+        <input type="date" id="checkInDate" name="checkInDate" required>
+        <label for="checkOutDate">Check-out Date:</label>
+        <input type="date" id="checkOutDate" name="checkOutDate" required onchange="calculateCost()">
+        <label for="paymentMethod">Payment Method:</label>
+        <select id="paymentMethod" name="paymentMethod" onchange="showPaymentFields()" required>
+            <option value="">Select Payment Method</option>
+            <option value="creditCard">Credit Card</option>
+            <option value="debitCard">Debit Card</option>
+            <option value="onlinePayment">Online Payment</option>
+        </select>
+        <div id="cardDetails" style="display:none;">
+            <label for="cardNumber">Card Number:</label>
+            <input type="text" id="cardNumber" name="cardNumber">
+            <label for="expiryDate">Expiry Date:</label>
+            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY">
+            <label for="cvv">CVV:</label>
+            <input type="text" id="cvv" name="cvv">
+        </div>
+        <div id="onlinePaymentURL" style="display:none;">
+            <label for="paymentUPI">Enter your UPI:</label>
+            <input type="text" id="paymentUPI" name="paymentUPI">
+        </div>
+        <button type="submit">Book Now</button>
+    </form>
+    <div id="totalCost"></div>
+</div>
+</body>
+</html>

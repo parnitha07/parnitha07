@@ -1,0 +1,16 @@
+<form id="bookingForm" onsubmit="validateFields(event)">
+    <label for="paymentMethod">Payment Method:</label>
+    <select id="paymentMethod" name="paymentMethod" onchange="showPaymentFields()" required>
+        <option value="">Select Payment Method</option>
+        <option value="upi">UPI</option>
+        <option value="cashOnDelivery">Cash on Delivery</option>
+    </select>
+
+    <!-- UPI Section -->
+    <div id="onlinePaymentURL" style="display:none;">
+        <label for="paymentUPI">Enter your UPI ID:</label>
+        <input type="text" id="paymentUPI" name="paymentUPI" placeholder="e.g., username@bankname">
+    </div>
+
+    <button type="submit">Submit Payment</button>
+</form>
